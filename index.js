@@ -69,19 +69,18 @@ let ToDoListManager = (function () {
     }
 
     _render(_getFromStorage());
-
+    
+    function _debounce(fn, interval) {
+        let timer;
+        return function () {
+            clearTimeout(timer);
+            let args = arguments, context = this;
+            timer = setTimeout(() => fn.apply(context, args), interval);
+        }
+    }
     return {
         createTask,
         removeTask,
-        filterTasks: debounce(filterTasks, 500)
+        filterTasks: _debounce(filterTasks, 500)
     }
 })();
-
-function debounce(fn, interval) {
-    let timer;
-    return function () {
-        clearTimeout(timer);
-        let args = arguments, context = this;
-        timer = setTimeout(() => fn.apply(context, args), interval);
-    }
-}
