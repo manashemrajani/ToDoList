@@ -2,8 +2,8 @@ let ToDoListManager = (function () {
     function _render(list) {
         var ul = document.getElementById("task-list");
         ul.innerHTML = "";
-        let sortedList = list.sort();
-        sortedList.forEach(item => _appendNode(item));
+        //let sortedList = list.sort();
+        list.forEach(item => _appendNode(item));
     }
 
     function createTask(item) {
@@ -31,25 +31,24 @@ let ToDoListManager = (function () {
     }
 
     function _addIntoStorage(value) {
-        let list = JSON.parse(localStorage.getItem("list")) || [];
-        list.push(value);
+        let list = _getFromStorage();
+        list.add(value);
         _setIntoStore(list);
         return list;
     }
 
     function _getFromStorage() {
-        return JSON.parse(localStorage.getItem("list")) || [];
+        return new Set(JSON.parse(localStorage.getItem("list"))) || new Set([]);
     }
 
     function _setIntoStore(list) {
-        localStorage.setItem("list", JSON.stringify(list));
+        localStorage.setItem("list", JSON.stringify(Array.from(list)));
     }
 
     function _removeTaskFromStorage(task) {
         let taskList = _getFromStorage();
         let text = task.srcElement.closest("li").dataset.text;
-        let index = taskList.findIndex((ele) => ele === text);
-        taskList.splice(index, 1);
+        taskList.delete(text);
         _setIntoStore(taskList);
     }
 
@@ -63,7 +62,7 @@ let ToDoListManager = (function () {
         _removeNode(task);
     }
     function filterTasks(val) {
-        let list = _getFromStorage();
+        let list = [..._getFromStorage()];
         let filteredList = list.filter(item => item.includes(val));
         _render(filteredList.length && filteredList || list);
     }
