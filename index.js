@@ -14,14 +14,41 @@ let ToDoListManager = (function () {
             item.value = "";
         }
     }
+    function _dragStart(ev) {
+        ev.dataTransfer.effectAllowed = 'move';
+        ev.dataTransfer.setData("task", ev.target.id);
+        ev.dataTransfer.setDragImage(ev.target, 0, 0);
+        return true;
+     }
 
+     function dragEnter(ev) {
+        event.preventDefault();
+        return true;
+     }
+     
+     function dragOver(ev) {
+        return false;
+     }
+
+     function dragDrop(ev) {
+        var src = ev.dataTransfer.getData("task");
+        // let newLi = document.createElement("li");
+        // newLi.addEventListener("dragstart",dragStart);
+        // newLi.setAttribute("draggable",true);
+        // newLi.innerText = src;
+        // ev.target.closest("ul").appendChild(newLi);
+        ev.target.insertAdjacentElement("afterEnd",document.getElementById(src));
+        ev.stopPropagation();
+        return false;
+     }
     function _appendNode(value) {
         var ul = document.getElementById("task-list");
         let li = document.createElement("li");
         li.classList.add("item");
         li.dataset.text = value;
         li.setAttribute("draggable", true);
-        li.addEventListener("dragstart", (ele => console.log(ele)));
+        li.setAttribute("id", value);
+        li.addEventListener("dragstart", (event) => {return _dragStart(event)});
         let removeBtn = document.createElement("button");
         removeBtn.innerHTML = "Remove";
         removeBtn.addEventListener("click", element => removeTask(element))
@@ -80,6 +107,9 @@ let ToDoListManager = (function () {
     return {
         createTask,
         removeTask,
+        dragEnter,
+        dragDrop,
+        dragOver,
         filterTasks: _debounce(filterTasks, 500)
     }
 })();

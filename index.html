@@ -14,9 +14,10 @@
             <input type="text" name="item" placeholder="Type to filter" oninput="ToDoListManager.filterTasks(this.value)" id="item">
             <button type="submit">Add Task</button>
         </form>
-        <ul id="task-list">
+        <ul id="task-list" ondragenter="return ToDoListManager.dragEnter(event)" ondrop="return ToDoListManager.dragDrop(event)" ondragover="return ToDoListManager.dragOver(event)">
         </ul>
     </div>
 </body>
 <script src="index.js"></script>
 </html>
+
